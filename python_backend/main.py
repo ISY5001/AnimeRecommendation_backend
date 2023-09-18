@@ -16,7 +16,7 @@ from measure import measure_method
 # 
 app = Flask(__name__)
 run_with_ngrok(app)
-path = "/home/hewen/ISS-workshop/MVP/IRS-MyAnime/python_backend"
+path = "/home/hewen/ISS-workshop/MVP/AnimeRecommendation/python_backend"
 
 # 预处理用户数据与电影数据
 def update_preproccessed_data():
