@@ -19,9 +19,9 @@ def set_config(cfg):
     mutex.acquire()
     try:
         # Cfg.RedisPre = set_default(cfg.RedisPre, "", "go.sso.redis")
-        Cfg.Language = set_default(cfg.Language, "", "cn")
-        Cfg.Token = set_default(cfg.Token, "", "token")
-        Cfg.Super = set_default(cfg.Super, "", "admin")  # 超级账户
+        # Cfg.Language = set_default(cfg.Language, "", "cn")
+        # Cfg.Token = set_default(cfg.Token, "", "token")
+        # Cfg.Super = set_default(cfg.Super, "", "admin")  # 超级账户
         Cfg.Host = set_default(cfg.Host, "", "http://localhost:8282")  # 域名
         Cfg.Routes = cfg.Routes
         # Cfg.OpenJwt = cfg.OpenJwt

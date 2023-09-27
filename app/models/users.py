@@ -1,7 +1,8 @@
 from datetime import datetime
 from pymysql import cursors
 from sqlalchemy import Column, Integer, String, Text, TIMESTAMP
-from sqlalchemy.ext.declarative import declarative_base
+# from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import declarative_base
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from base import engine
@@ -11,11 +12,11 @@ Base = declarative_base()
 class Users(Base):
     __tablename__ = 'users'
 
-    Ctime = Column(Integer, default=0, nullable=False, comment='创建时间', index=True)
+    # Ctime = Column(Integer, default=0, nullable=False, comment='创建时间', index=True)
     # Email = Column(String(100), default='', nullable=False, comment='邮箱')
     # Ext = Column(Text, nullable=False, comment='扩展字段')
     Id = Column(Integer, primary_key=True, autoincrement=True, nullable=False, comment='主键')
-    Mtime = Column(TIMESTAMP, default=datetime.utcnow, nullable=False, comment='修改时间')
+    # Mtime = Column(TIMESTAMP, default=datetime.utcnow, nullable=False, comment='修改时间')
     Name = Column(String(50), default='', nullable=False, comment='用户名')
     Passwd = Column(String(50), nullable=False, comment='密码')
     # Mobile = Column(String(20), default='', nullable=False, comment='手机号')
@@ -60,7 +61,7 @@ def get_user_row_by_id(user_id):
 
 # 添加用户
 # def add_user(user, trace, device):
-def add_user(user, trace, device):
+def add_user(user):
     session.add(user)
     # session.add(trace)
     # session.add(device)
@@ -78,4 +79,19 @@ def get_user_by_id(user_id):
 
 if __name__ == '__main__':
     # Without Testing
-    Base.metadata.create_all(engine)
+    # Base.metadata.create_all(engine)
+    # Base = declarative_base()
+
+    # Test 1
+    user_data = get_user_row_by_id(1)
+    if user_data:
+        print("User Data:")
+        print(f"ID: {user_data['Id']}")
+        print(f"Name: {user_data['Name']}")
+    else:
+        print("User not found")
+
+    # Test 2
+    user_datas = get_all_users()
+    for udata in user_datas:
+        print(udata['Id'])
