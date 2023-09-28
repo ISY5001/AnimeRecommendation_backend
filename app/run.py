@@ -1,4 +1,6 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS, cross_origin
+import json
 # from flask_cors import CORS
 # from functools import wraps
 # import jwt
@@ -16,7 +18,10 @@ from routes import users
 from config import mysql
 
 # app = Flask(__name__)
-app = Flask(__name__, template_folder="static/templates")  # Update the template_folder path
+# app = Flask(__name__, template_folder="static/templates")  # Update the template_folder path
+app = Flask(__name__)
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'content-type'
 mysql = mysql.configure_mysql(app)
 
 # def load():
@@ -29,13 +34,15 @@ mysql = mysql.configure_mysql(app)
 #     conf.set_config(c)
 
 @app.route('/')
-@app.route("/login", methods=["GET","POST"])
+@app.route("/register", methods=["OPTIONS","GET","POST"])
+def register():
+    return users.register(mysql)
+
+@app.route("/login", methods=["OPTIONS","GET","POST"])
 def login():
     return users.login(mysql)
 # register route
-@app.route("/register", methods=["GET","POST"])
-def register():
-    return users.register(mysql)
+
     
 
 @app.route("/logout")
