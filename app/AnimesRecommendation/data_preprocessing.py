@@ -1,11 +1,19 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
 import re
 import string
 from ast import literal_eval
 from scipy.sparse import csr_matrix
+
+import logging
+
+# Constants
+MIN_VOTES_THRESHOLD = 0.85
+MEAN_RATING = 0  # Initialize with a default value
+
+# Logging configuration
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 def text_cleaning(text):
     text = re.sub(r'&quot;', '', text)
@@ -21,19 +29,17 @@ def text_cleaning(text):
 def weighted_rating(x, m, C):
     v = x['ScoredBy']
     R = x['Rating']
-    # calculation based on the IMDB formula
     return (v/(v+m)*R)+(m/(m+v)*C)
 
 def clean_data(x):
     if isinstance(x, list):
         return [str.lower(i.replace(" ","")) for i in x]
-    
     else:
         if isinstance(x, str):
             return str.lower(x.replace(" ",""))
         else:
             return ""
-        
+
 def create_soup(data):
     genre = " ".join(data['Genre'])
     media_type = data['Type']
@@ -43,26 +49,34 @@ def create_soup(data):
     result = f"{genre} {media_type} {producers} {studios} {synopsis} {studios}"
     return result
 
+def main():
+    # Parameterize file paths
+    input_csv = "data/Anime_data.csv"
+    output_csv = "data/cleaned_anime_data.csv"
 
-if __name__ == "__main__":
-    anime = pd.read_csv("data/Anime_data.csv", encoding='latin')
+    # Read data from CSV
+    try:
+        anime = pd.read_csv(input_csv, encoding='latin')
+    except FileNotFoundError:
+        logger.error(f"File not found: {input_csv}")
+        return
+    
+    logger.info("Cleaning anime data...")
     anime['Title'] = anime['Title'].apply(text_cleaning)
-    '''
-    IMDB's weighted rating (WR) which is given as :
-    => WR = (v/(v+m)R) + (m/(v+m)C):
-    * v : the number of votes for the movie; 
-    * m : the minimum votes required to be listed in the chart; 
-    * R : the average rating of the movie; 
-    * C : the mean vote across the whole report
-    '''
+    
+    # Compute m and C for weighted rating
     C = anime['Rating'].mean()
-    m = anime['ScoredBy'].quantile(0.85)
+    m = anime['ScoredBy'].quantile(MIN_VOTES_THRESHOLD)
+    
+    # Filter and compute weighted scores
     q_animes = anime.copy().loc[anime['ScoredBy'] >= m]
     q_animes['Score'] = q_animes.apply(lambda x: weighted_rating(x, m, C), axis=1)
     q_animes = q_animes.sort_values('Score', ascending=False)
     best_score = q_animes.sort_values(by=['Score'], ascending=False)[:10]
     best_scores = best_score[['Score','Title','Genre', 'Studio', 'Type']].set_index('Title')
-    # data for content based filtering
+
+    # Data preprocessing for content-based filtering
+    logger.info("Preprocessing data for content-based filtering...")
     anime['Synopsis'] = anime['Synopsis'].fillna('')
     features = ['Genre','Producer', 'Studio']
     anime[features] = anime[features].fillna('[' ']')
@@ -74,5 +88,10 @@ if __name__ == "__main__":
     anime['soup'] = anime.apply(create_soup, axis=1)
     anime = anime.reset_index()
     anime.fillna({'Rating':0}, inplace=True)
-    # export data
-    anime.to_csv("data/cleaned_anime_data.csv", index=False, encoding='utf-8')
+
+    # Export cleaned data
+    anime.to_csv(output_csv, index=False, encoding='utf-8')
+    logger.info(f"Cleaned data saved to {output_csv}")
+
+if __name__ == "__main__":
+    main()
