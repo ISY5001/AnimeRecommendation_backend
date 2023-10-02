@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 import json
+import bcolors
 # from flask_cors import CORS
 # from functools import wraps
 # import jwt
@@ -33,17 +34,39 @@ mysql = mysql.configure_mysql(app)
 #     # c.open_jwt = True;
 #     conf.set_config(c)
 
+
 @app.route('/')
-@app.route("/register", methods=["OPTIONS","GET","POST"])
+@app.route("/register", methods=["OPTIONS", "GET", "POST"])
 def register():
     return users.register(mysql)
 
-@app.route("/login", methods=["OPTIONS","GET","POST"])
+
+@app.route("/login", methods=["OPTIONS", "GET", "POST"])
 def login():
     return users.login(mysql)
-# register route
 
-    
+# recommend route
+
+
+@app.route('/recommend',  methods=["OPTIONS", "GET", "POST"])
+def getRecommendation():
+    if request.method == "POST":
+        # Get the data from the request's JSON body
+        data = request.get_json()
+
+        # Extract the username from the data
+        username = data.get('username', '')
+
+        print(bcolors.BLUE + "getting recommendations...")
+        print(bcolors.BLUE + username)
+
+        # Handle the recommendation logic here
+        # ...
+
+        return "return from flask route /recommend"
+    else:
+        return "GET request not supported"
+
 
 @app.route("/logout")
 # @auth_required
