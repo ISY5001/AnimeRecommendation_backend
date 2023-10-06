@@ -3,3 +3,4 @@
 *.pkl
 .venv/
 try.ipynb
+data/*.csv

@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS `accounts` (
   PRIMARY KEY(`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
-//Ratings创表
+-- Ratings创表
 CREATE TABLE IF NOT EXISTS `ratings` (
   `rate_id` int(11) NOT NULL AUTO_INCREMENT,
   `account_id` int(11) NOT NULL,
