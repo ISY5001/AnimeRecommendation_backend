@@ -16,6 +16,8 @@ import bcolors
 
 
 from routes import users
+from routes import rating
+from routes import anime
 from config import mysql
 
 # app = Flask(__name__)
@@ -77,6 +79,31 @@ def logout():
 # def get_user_info():
 #     # TODO
 #     pass
+
+#Anime fetch from database
+@app.route('/anime', methods=['GET'])
+def fetch_anime():
+    page = int(request.args.get('page', 1))
+    return anime.get_all_animes(mysql, page)
+
+
+
+
+#@app.route('/getAnime', methods=['GET'])
+#def fetch_anime_by_keyword():
+#    keyword = request.args.get('keyword', 'One Piece')
+#    page = int(request.args.get('page', 1))
+#    return get_anime_by_keyword(mysql, keyword, page)
+
+#using ID
+#@app.route('/getAnimeByID', methods=['GET'])
+#def fetch_anime_by_id():
+ #   anime_id = request.args.get('id')
+ #   if not anime_id:
+ #       return jsonify({"msg": "Please provide an Anime ID!"}), 400
+  #  return get_anime_by_id(mysql, anime_id)
+
+
 
 # TODO
 # @app.route("/rating", methods=["POST"])

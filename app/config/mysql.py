@@ -36,7 +36,10 @@ from flask_mysqldb import MySQL
 def configure_mysql(app):
     app.config['MYSQL_HOST'] = 'localhost'
     app.config['MYSQL_USER'] = 'root'
+
     app.config['MYSQL_PASSWORD'] = 'chenzhw57'
+
+
     app.config['MYSQL_DB'] = 'user_data'
     app.config['SECRET_KEY'] = 'afhfhkgigugh'
     mysql = MySQL(app)
