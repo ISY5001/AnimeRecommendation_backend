@@ -18,3 +18,30 @@ CREATE TABLE IF NOT EXISTS `ratings` (
   PRIMARY KEY (`rate_id`),
   FOREIGN KEY (`account_id`) REFERENCES `accounts`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+
+SET GLOBAL local_infile=1;
+-- create a temporary table to hold the data from the csv file
+CREATE TEMPORARY TABLE temp_ratings (
+  account_id INT,
+  anime_id INT,
+  scores INT
+);
+
+-- load the data from csv file into temp file
+-- /Users/chenzhiwei/Desktop/AnimeRecommendation_backend/app/data/rating.csv
+LOAD DATA LOCAL INFILE '/Users/chenzhiwei/Desktop/AnimeRecommendation_backend/app/data/rating.csv'
+INTO TABLE temp_ratings
+FIELDS TERMINATED BY ','
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS;
+
+-- Select a limited number of rows from the temporary table:
+INSERT INTO ratings (account_id, anime_id, scores)
+SELECT account_id, anime_id, scores
+FROM temp_ratings;
+-- LIMIT 1000
+
+
+-- Optionally, you can drop the temporary table:
+DROP TEMPORARY TABLE temp_ratings;
