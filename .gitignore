@@ -4,3 +4,4 @@
 .venv/
 try.ipynb
 data/*.csv
+*.DS_Store
