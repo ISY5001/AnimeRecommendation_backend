@@ -1,8 +1,11 @@
--- # Database : user_data 
+# Database : user_data 
+```sql
 CREATE DATABASE IF NOT EXISTS `user_data` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `user_data`;
+```
+## scripts for creating table `accounts`
 
--- ## scripts for creating table `accounts`
+```sql
 CREATE TABLE IF NOT EXISTS `accounts` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
@@ -10,9 +13,11 @@ CREATE TABLE IF NOT EXISTS `accounts` (
   `email` varchar(100) NOT NULL,
   PRIMARY KEY(`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+```
 
+## scripts for creating table `ratings`
 
---  ## scripts for creating table `ratings`
+```sql
 -- run insert_random_id.py first if you haven't already
 CREATE TABLE IF NOT EXISTS `ratings` (
   `rate_id` int(11) NOT NULL AUTO_INCREMENT,
@@ -49,9 +54,11 @@ FROM temp_ratings;
 
 -- Optionally, you can drop the temporary table:
 DROP TEMPORARY TABLE temp_ratings;
+```
 
+## scripts for creating `anime` table
 
--- ## scripts for creating `anime` table
+```sql
 CREATE TABLE IF NOT EXISTS anime (
   Anime_id INT NOT NULL,
   Title VARCHAR(255),
@@ -78,8 +85,9 @@ FIELDS TERMINATED BY ','
 ENCLOSED BY '"'
 LINES TERMINATED BY '\n'
 IGNORE 1 ROWS;
+```
 
--- ### add a new column in `anime`
+### add a new column in `anime`
+```sql
 ALTER TABLE anime ADD COLUMN poster VARCHAR(255);
-
-
+```

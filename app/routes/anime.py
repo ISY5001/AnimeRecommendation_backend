@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import logging
-
+import bcolors
 import re
 import json
 
@@ -12,11 +12,12 @@ def get_all_animes(mysql, page=1):
         logging.info(f"Fetching all anime on page: {page}")
         
         # Adjust the query to fetch all anime
-        cursor.execute('SELECT * FROM cleaned_anime_data LIMIT %s, 10', ((page-1)*10,))
+        # cursor.execute('SELECT * FROM cleaned_anime_data LIMIT %s, 10', ((page-1)*10,))
+        cursor.execute('SELECT * FROM anime LIMIT %s, 10', ((page-1)*10,))
         
         anime_list = cursor.fetchall()
         logging.info(f"Number of anime found: {len(anime_list)}")
-        
+        print(bcolors.BLUE + "Number of anime found:", len(anime_list))
         if anime_list:
             return jsonify({"animes": anime_list}), 200
         else:
