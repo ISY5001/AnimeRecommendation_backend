@@ -1,4 +1,8 @@
 /myenv
+.DS_Store
+.venv/
+app/.DS_Store
+try.ipynb
 *.csv
 *.pkl
 .venv/
