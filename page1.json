@@ -16,7 +16,7 @@
       "Source": "Original",
       "Aired": "Apr 3, 1998 to Apr 24, 1999",
       "Link": "https://myanimelist.net/anime/1/Cowboy_Bebop\r",
-      "poster": "/Users/chenzhiwei/Downloads/AnimeRecommendation_backend/app/routes/poster_images/anime_4_19644.jpg"
+      "poster": "https://cdn.myanimelist.net/images/anime/4/19644.jpg"
     },
     {
       "Anime_id": 5,
@@ -34,7 +34,7 @@
       "Source": "Original",
       "Aired": "Sep 1, 2001",
       "Link": "https://myanimelist.net/anime/5/Cowboy_Bebop__Tengoku_no_Tobira\r",
-      "poster": "/Users/chenzhiwei/Downloads/AnimeRecommendation_backend/app/routes/poster_images/anime_1439_93480.jpg"
+      "poster": "https://cdn.myanimelist.net/images/anime/1439/93480.jpg"
     },
     {
       "Anime_id": 6,
@@ -52,7 +52,7 @@
       "Source": "Manga",
       "Aired": "Apr 1, 1998 to Sep 30, 1998",
       "Link": "https://myanimelist.net/anime/6/Trigun\r",
-      "poster": "/Users/chenzhiwei/Downloads/AnimeRecommendation_backend/app/routes/poster_images/anime_7_20310.jpg"
+      "poster": "https://cdn.myanimelist.net/images/anime/7/20310.jpg"
     },
     {
       "Anime_id": 7,
@@ -70,7 +70,7 @@
       "Source": "Original",
       "Aired": "Jul 2, 2002 to Dec 24, 2002",
       "Link": "https://myanimelist.net/anime/7/Witch_Hunter_Robin\r",
-      "poster": "/Users/chenzhiwei/Downloads/AnimeRecommendation_backend/app/routes/poster_images/anime_10_19969.jpg"
+      "poster": "https://cdn.myanimelist.net/images/anime/10/19969.jpg"
     },
     {
       "Anime_id": 8,
@@ -88,13 +88,14 @@
       "Source": "Manga",
       "Aired": "Sep 30, 2004 to Sep 29, 2005",
       "Link": "https://myanimelist.net/anime/8/Bouken_Ou_Beet\r",
-      "poster": "/Users/chenzhiwei/Downloads/AnimeRecommendation_backend/app/routes/poster_images/anime_7_21569.jpg"
+      "poster": "https://cdn.myanimelist.net/images/anime/7/21569.jpg"
     },
     {
       "Anime_id": 15,
       "Title": "Eyeshield 21",
       "Genre": "['Action', 'Sports', 'Comedy', 'Shounen']",
       "Synopsis": "Sena is like any other shy kid starting high school; he's just trying to survive. Constantly bullied, he's accustomed to running away. \r\n \r\nSurviving high school is about to become a lot more difficult after Hiruma, captain of the school's American football team, witnesses Sena's incredible agility and speed during an escape from some bullies. Hiruma schemes to make Sena the running back of his school team, The Devil Bats, hoping that it will turn around the squad's fortunes from being the laughingstock of Japan's high school leagues, to title contender. \r\n \r\nTo protect his precious star player from rivaling recruiters, he enlists Sena as \"team secretary,\" giving him a visored helmet and the nickname \"Eyeshield 21\" to hide his identity. \r\n \r\nThe Devilbats will look to make their way to the Christmas Bowl, an annual tournament attended by the best football teams in Japan, with \"Eyeshield 21\" leading the way. Will they be able to win the Christmas Bowl? Will Sena be able to transform from a timid, undersized freshman to an all-star player? Put on your pads and helmet to find out!",
+      "Type": "TV",
       "Producer": "['TV Tokyo', 'Nihon Ad Systems', 'TV Tokyo Music', 'Shueisha']",
       "Studio": "['Studio Gallop']",
       "Rating": 8.05,
@@ -105,7 +106,7 @@
       "Source": "Manga",
       "Aired": "Apr 6, 2005 to Mar 19, 2008",
       "Link": "https://myanimelist.net/anime/15/Eyeshield_21\r",
-      "poster": "/Users/chenzhiwei/Downloads/AnimeRecommendation_backend/app/routes/poster_images/anime_1079_133529.jpg"
+      "poster": "https://cdn.myanimelist.net/images/anime/1079/133529.jpg"
     },
     {
       "Anime_id": 16,
@@ -123,7 +124,7 @@
       "Source": "Manga",
       "Aired": "Apr 15, 2005 to Sep 27, 2005",
       "Link": "https://myanimelist.net/anime/16/Hachimitsu_to_Clover\r",
-      "poster": "/Users/chenzhiwei/Downloads/AnimeRecommendation_backend/app/routes/poster_images/anime_1301_133577.jpg"
+      "poster": "https://cdn.myanimelist.net/images/anime/1301/133577.jpg"
     },
     {
       "Anime_id": 17,
@@ -141,7 +142,7 @@
       "Source": "Manga",
       "Aired": "Sep 11, 2002 to Sep 10, 2003",
       "Link": "https://myanimelist.net/anime/17/Hungry_Heart__Wild_Striker\r",
-      "poster": "/Users/chenzhiwei/Downloads/AnimeRecommendation_backend/app/routes/poster_images/anime_12_49655.jpg"
+      "poster": "https://cdn.myanimelist.net/images/anime/12/49655.jpg"
     },
     {
       "Anime_id": 18,
@@ -159,7 +160,7 @@
       "Source": "Manga",
       "Aired": "Apr 17, 2004 to Feb 18, 2006",
       "Link": "https://myanimelist.net/anime/18/Initial_D_Fourth_Stage\r",
-      "poster": "/Users/chenzhiwei/Downloads/AnimeRecommendation_backend/app/routes/poster_images/anime_9_10521.jpg"
+      "poster": "https://cdn.myanimelist.net/images/anime/9/10521.jpg"
     },
     {
       "Anime_id": 19,
@@ -177,7 +178,7 @@
       "Source": "Manga",
       "Aired": "Apr 7, 2004 to Sep 28, 2005",
       "Link": "https://myanimelist.net/anime/19/Monster\r",
-      "poster": "/Users/chenzhiwei/Downloads/AnimeRecommendation_backend/app/routes/poster_images/anime_10_18793.jpg"
+      "poster": "https://cdn.myanimelist.net/images/anime/10/18793.jpg"
     }
   ],
   "totalResults": "10",
