@@ -3,6 +3,7 @@ import os
 from webcrawl import download_and_rename_anime_poster
 import concurrent.futures
 import time
+from printcolor import RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, RESET
 
 # Function to connect to MySQL database
 def connect_to_database():
@@ -47,11 +48,11 @@ if __name__ == "__main__":
 
         # Fetch anime records in the specified range
         with db_connection.cursor() as cursor:
-            cursor.execute("SELECT Anime_id, Link FROM anime WHERE poster IS NULL AND Anime_id BETWEEN %s AND %s", (start_id, end_id))
+            cursor.execute("SELECT Anime_id, Link FROM anime WHERE poster IS NULL and length(Link) > 10;")
             anime_records = cursor.fetchall()
 
         # Download and update posters using concurrent futures
-        with concurrent.futures.ThreadPoolExecutor(max_workers=16) as executor:  # Use ThreadPoolExecutor for threading
+        with concurrent.futures.ThreadPoolExecutor(max_workers=8) as executor:  # Use ThreadPoolExecutor for threading
             futures = []
 
             for anime_id, link in anime_records:
@@ -62,7 +63,7 @@ if __name__ == "__main__":
                 anime_id, poster_filename = future.result()
                 if poster_filename:
                     update_database(db_connection, anime_id, poster_filename)
-                    print(f"Downloaded and saved poster for Anime ID {anime_id}")
+                    print(GREEN, "[I] Downloaded and saved, " , "anime_id=", anime_id, ", poster=", poster_filename)
 
         db_connection.close()
     else:

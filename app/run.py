@@ -2,6 +2,10 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS, cross_origin
 import json
 import bcolors
+import sys
+sys.path.append("/Users/chenzhiwei/Downloads/AnimeRecommendation_backend/app/routes")
+from printcolor import RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, RESET
+
 # from flask_cors import CORS
 # from functools import wraps
 # import jwt
@@ -81,9 +85,10 @@ def logout():
 #     pass
 
 #Anime fetch from database
-@app.route('/anime', methods=['GET'])
+@app.route('/fetchAnimes', methods=['GET'])
 def fetch_anime():
     page = int(request.args.get('page', 1))
+    print(BLUE, "[I] page =", page, RESET)
     return anime.get_all_animes(mysql, page)
 
 

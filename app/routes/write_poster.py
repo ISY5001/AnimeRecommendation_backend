@@ -1,7 +1,7 @@
 import mysql.connector
 import os
 from webcrawl import download_and_rename_anime_poster
-
+from printcolor import RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, RESET
 # Function to connect to MySQL database
 def connect_to_database():
     try:
@@ -22,14 +22,13 @@ def connect_to_database():
 def download_and_update_posters(connection):
     try:
         cursor = connection.cursor()
-        cursor.execute("SELECT Anime_id, Link FROM anime  WHERE poster is null")
+        cursor.execute("SELECT Anime_id, Link, poster FROM anime  WHERE poster is null  and length(Link) > 10;")
         anime_records = cursor.fetchall()
 
-        for anime_id, link in anime_records:
-            # Extract the anime ID from the Link
-            anime_id = anime_id
-            print("processing ", anime_id, "...")
+        for anime_id, link, poster in anime_records:
+            print(RESET, "[I] processing ", anime_id, ", poster is ", poster)
             poster_filename = download_and_rename_anime_poster(link, "poster_images")
+            print(CYAN , "[I] poster_filename = ", poster_filename  , RESET)
             if poster_filename: 
             # Update the database with the poster filename
                 update_query = "UPDATE anime SET poster = %s WHERE Anime_id = %s"

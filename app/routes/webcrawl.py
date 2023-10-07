@@ -1,6 +1,9 @@
 import requests
 import re
 import os
+from printcolor import RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, RESET
+import warnings
+warnings.filterwarnings("ignore")
 
 def download_and_rename_anime_poster(anime_url, save_folder):
     try:
@@ -22,28 +25,30 @@ def download_and_rename_anime_poster(anime_url, save_folder):
                 if not os.path.exists(img_path):
                     with open(img_path, "wb") as img_file:
                         headers = {'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML,like Gecko) Chrome/86.0.4240.111 Safari/537.36'}
+                        print(GREEN , "[I] DOWNLOADING ", RESET, img_url, end="...")
                         img_file.write(requests.get(img_url, headers=headers,  verify=False).content)
-
+                        print(GREEN, "SUCCESS." , RESET)
                     return img_filename # do not return img_path
                 else:
-                    print(f"Image already exists: {img_path}")
+                    print(YELLOW , "[W] Image already exists: ", img_path, end=", ")
+                    print("returning ", img_filename, " from webcrawl.py" , RESET)
                     return img_filename
             else:
                 return None  # Image URL not found in the HTML
         else:
-            print(f"Failed to fetch the URL. Status code: {response.status_code}")
+            print(RED , "[E] Failed to fetch the URL. Status code: " , response.status_code , RESET)
             return None
     except Exception as e:
-        print(f"An error occurred: {str(e)}")
+        print( RED , "[E]", str(e) , RESET)
         return None
 
 # Example usage:
-anime_url = "https://myanimelist.net/anime/1/Cowboy_Bebop"
-save_folder = "./poster_images"  # Change this to your desired folder path
-os.makedirs(save_folder, exist_ok=True)
-poster_file_name = download_and_rename_anime_poster(anime_url, save_folder)
+# anime_url = "https://myanimelist.net/anime/1/Cowboy_Bebop"
+# save_folder = "./poster_images"  # Change this to your desired folder path
+# os.makedirs(save_folder, exist_ok=True)
+# poster_file_name = download_and_rename_anime_poster(anime_url, save_folder)
 
-if poster_file_name:
-    print(f"Poster downloaded and saved as: {poster_file_name}")
-else:
-    print("Poster URL not found or existed.")
+# if poster_file_name:
+#     print(f"Poster downloaded and saved as: {poster_file_name}")
+# else:
+#     print("Poster URL not found or existed.")

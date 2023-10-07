@@ -5,25 +5,35 @@ import logging
 import bcolors
 import re
 import json
+import sys
+sys.path.append("/Users/chenzhiwei/Downloads/AnimeRecommendation_backend/app/routes")
+from printcolor import RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, RESET
 
 def get_all_animes(mysql, page=1):
+    print(BLUE, "[I] page =", page, RESET)
     try:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         logging.info(f"Fetching all anime on page: {page}")
         
         # Adjust the query to fetch all anime
         # cursor.execute('SELECT * FROM cleaned_anime_data LIMIT %s, 10', ((page-1)*10,))
-        cursor.execute('SELECT * FROM anime LIMIT %s, 10', ((page-1)*10,))
+        cursor.execute('SELECT * FROM anime where poster is not null limit %s,%s;', ((page-1)*10,10))
         
         anime_list = cursor.fetchall()
-        logging.info(f"Number of anime found: {len(anime_list)}")
-        print(bcolors.BLUE + "Number of anime found:", len(anime_list))
+        # logging.info(f"Number of anime found: {len(anime_list)}")
+        print(BLUE, "[I] Number of anime found: ", len(anime_list), RESET)
         if anime_list:
-            return jsonify({"animes": anime_list}), 200
+            for anime_item in anime_list:
+                anime_item["poster"] = "file:////Users/chenzhiwei/Downloads/AnimeRecommendation_backend/app/routes/poster_images/" + anime_item["poster"]
+            
+            json_response = json.dumps({"Search": anime_list, "totalResults":str(len(anime_list)), "Response":"True"}, indent=2)
+            # return jsonify({"animes": anime_list}), 200
+            return json_response, 200
         else:
             return jsonify({"msg": "No anime found!"}), 404
     except Exception as e:
-        logging.error(f"Error fetching anime: {str(e)}")
+        # logging.error(f"Error fetching anime: {str(e)}")
+        print(RED, "[E] Error fetching anime", str(e), RESET)
         return jsonify({"msg": "Internal server error"}), 500
 
 '''
