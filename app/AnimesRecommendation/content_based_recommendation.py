@@ -16,7 +16,7 @@ def get_recommendations(idx, cosine_sim, num_recommend=10):
 
 if __name__ == "__main__":
     # Load the cleaned anime data
-    anime = pd.read_csv("data/cleaned_anime_data.csv", index_col=0)
+    anime = pd.read_csv("app/data/cleaned_anime_data.csv", index_col=0)
     # Initialize the CountVectorizer
     count = CountVectorizer(stop_words='english')
     # Fit and transform the text data
