@@ -87,10 +87,16 @@ def logout():
 #Anime fetch from database
 @app.route('/fetchAnimes', methods=['GET'])
 def fetch_anime():
+    print(BLUE, "into function", RESET)
     page = int(request.args.get('page', 1))
     print(BLUE, "[I] page =", page, RESET)
     return anime.get_all_animes(mysql, page)
-
+#Anime fetch from database
+# @app.route('/anime', methods=['GET'])
+# def fetch_anime2():
+#     page = int(request.args.get('page', 1))
+#     print(BLUE, "[I] page =", page, RESET)
+#     return anime.get_all_animes(mysql, page)
 
 
 
