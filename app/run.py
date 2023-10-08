@@ -63,6 +63,23 @@ def fetch_anime():
     page = int(request.args.get('page', 1))
     return anime.get_all_animes(mysql, page)
 
+@app.route('/get_userid', methods=['GET','POST'])
+def get_userid_endpoint():
+    response = users.get_userid_from_db(mysql)
+    print(response)
+    return response
+
+
+@app.route('/rating/fetch_ratings/<account_id>/<anime_id>', methods=['GET'])
+def get_user_ratings(account_id, anime_id):
+    print('ac'+account_id)
+    print('an'+anime_id)
+    return rating.fetch_user_ratings(mysql, account_id, anime_id)
+
+
+@app.route('/rating/upload_ratings', methods=['POST'])
+def rate_anime():
+    return rating.upload_user_ratings(mysql)
 
 
 
