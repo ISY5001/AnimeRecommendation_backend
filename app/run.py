@@ -18,7 +18,7 @@ from routes import users
 from routes import rating
 from routes import anime
 from config import mysql
-from routes import chatbot
+#from routes import chatbot
 
 # app = Flask(__name__)
 # app = Flask(__name__, template_folder="static/templates")  # Update the template_folder path
@@ -35,10 +35,11 @@ mysql = mysql.configure_mysql(app)
 #     ]
 #     # c.open_jwt = True;
 #     conf.set_config(c)
-
+'''
 @app.route('/chatbot', methods=["OPTIONS","GET","POST"])
 def chatbotreply():
     return chatbot.reply()  
+    '''
 @app.route('/')
 @app.route("/register", methods=["OPTIONS","GET","POST"])
 def register():

@@ -35,7 +35,8 @@ def login(mysql):
                 session['loggedin'] = True
                 session['id'] = account['id']
                 session['username'] = account['username']
-                return jsonify({"msg": "success", "account_id": session['id']}), 200
+                session['password'] = account['password']
+                return jsonify({"msg": "success", "account_id": session['id'], "username": session['username'],"password": session['password']}), 200
 
             else:
                 return jsonify({"msg" :"Incorrect username / password!"}), 400
@@ -105,7 +106,8 @@ def get_userid_from_db(mysql):
             session['loggedin'] = True
             session['id'] = account['id']
             session['username'] = account['username']
-            return jsonify({"account_id": session['id']}), 200
+            session['password'] = account['password']
+            return jsonify({"msg": "success", "account_id": session['id'], "username": session['username'], "password": session['password']}), 200
         else:
             return jsonify({"msg": "Incorrect username / password!"}), 400
 

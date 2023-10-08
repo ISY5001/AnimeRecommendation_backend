@@ -1,3 +1,4 @@
+'''
 from flask import Flask, request, jsonify
 from pprint import pprint
 from paddlenlp import Taskflow
@@ -64,3 +65,4 @@ def reply():
 
 if __name__ == '__main__':
     app.run(debug=True)
+'''
