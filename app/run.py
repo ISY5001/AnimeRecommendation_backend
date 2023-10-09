@@ -84,6 +84,7 @@ def get_user_ratings(account_id, anime_id):
 
 @app.route('/rating/upload_ratings', methods=['POST'])
 def rate_anime():
+    print('upload score')
     return rating.upload_user_ratings(mysql)
 
 
