@@ -9,3 +9,4 @@ try.ipynb
 try.ipynb
 data/*.csv
 *.DS_Store
+*.pyc
