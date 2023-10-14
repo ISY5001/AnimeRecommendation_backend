@@ -8,6 +8,7 @@ import json
 import sys
 import requests
 sys.path.append("/Users/chenzhiwei/Downloads/AnimeRecommendation_backend/app/routes")
+sys.path.append("/Users/chenzhiwei/Downloads/AnimeRecommendation_backend/app")
 from printcolor import RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, RESET
 import warnings
 warnings.filterwarnings("ignore")
@@ -15,6 +16,7 @@ import requests
 import re
 import concurrent.futures
 from bs4 import BeautifulSoup  # You may need to install this package
+from AnimesRecommendation import collaborative_filtering_recommendation
 
 # API_URL = "https://www.omdbapi.com/"
 # API_KEY = "f9bfc5b4"
@@ -61,12 +63,12 @@ def fetch_image_urls(anime_list):
 # Your existing get_all_animes function
 def get_all_animes(mysql, page=1):
     # ... (Your existing code)
-    print(BLUE, "[I] page =", page, RESET)
+    # print(BLUE, "[I] page =", page, RESET)
     try:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         cursor.execute('SELECT * FROM anime where poster is not null limit %s,%s;', ((page-1)*10,10))
         anime_list = cursor.fetchall()
-        print(BLUE, "[I] Number of anime found: ", len(anime_list), RESET)
+        # print(BLUE, "[I] Number of anime found: ", len(anime_list), RESET)
         if anime_list:
             # Fetch image URLs in parallel
             anime_list = fetch_image_urls(anime_list)
@@ -77,6 +79,23 @@ def get_all_animes(mysql, page=1):
     except Exception as e:
         print(RED, "[E] Error fetching anime", str(e), RESET)
         return jsonify({"msg": "Internal server error"}), 500
+
+def get_rec_animes(mysql, page=1, username=""):
+    if (username == "") :
+        return get_all_animes(mysql, page=1)
+    sql_query = """
+        select Title from anime where Anime_id = (
+        select anime_id from ratings where account_id = (
+        SELECT id FROM accounts WHERE username = %s) order by scores desc limit 1);
+        """
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute(sql_query, (username,))
+    anime_title = cursor.fetchone()
+    print(RED, anime_title, RESET)
+    return collaborative_filtering_recommendation.get_recommendation(anime_title)
+
+
+    
 
 # API_URL = "https://www.omdbapi.com/"
 # # API_URL = "img.omdbapi.com/"

@@ -3,6 +3,11 @@ import numpy as np
 from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
 import pickle
+# from ..config import mysql
+import sys 
+sys.path.append('/Users/chenzhiwei/Downloads/AnimeRecommendation_backend/app/')
+import config.mysql as mysql
+import MySQLdb.cursors
 
 def train_recommendation_system():
     # Load anime and rating data
@@ -60,6 +65,14 @@ def get_recommendation(anime_title):
     except Exception as e:
         return str(e)
 
+
+"""
+=========================
+end of session
+=========================
+"""
+
+    
 if __name__ == "__main__":
     # Train the recommendation system (call this only once or when data changes)
     train_recommendation_system()
@@ -67,6 +80,8 @@ if __name__ == "__main__":
     # Get recommendations for a specific anime
     anime_title = 'Sen to Chihiro no Kamikakushi'  # Replace with the anime title you want to use
     recommendations = get_recommendation(anime_title)
+
+    print(recommendations)
 
     # Print the recommendations
     if not recommendations.empty:

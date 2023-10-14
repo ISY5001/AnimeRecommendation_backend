@@ -4,7 +4,7 @@ import json
 import bcolors
 import sys
 sys.path.append("/Users/chenzhiwei/Downloads/AnimeRecommendation_backend/app/routes")
-from printcolor import RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, RESET
+from routes.printcolor import RED, GREEN, YELLOW, BLUE, MAGENTA, CYAN, RESET
 
 # from flask_cors import CORS
 # from functools import wraps
@@ -56,23 +56,17 @@ def login():
 
 @app.route('/recommend',  methods=["OPTIONS", "GET", "POST"])
 def getRecommendation():
-    if request.method == "POST":
+    if request.method == "GET":
         # Get the data from the request's JSON body
-        data = request.get_json()
 
-        # Extract the username from the data
-        username = data.get('username', '')
-
-        print(bcolors.BLUE + "getting recommendations...")
-        print(bcolors.BLUE + username)
+        username = request.args.get('username') # worked
+        # print(RED, username, "Backend, recommend route", RESET)
 
         # Handle the recommendation logic here
-        # ...
-
-        return "return from flask route /recommend"
+        return anime.get_rec_animes(mysql, page=1, username=username)
+        # return "return from flask route /recommend"
     else:
         return "GET request not supported"
-
 
 @app.route("/logout")
 # @auth_required
