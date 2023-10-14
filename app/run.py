@@ -54,17 +54,12 @@ def login():
 # recommend route
 
 
-@app.route('/recommend',  methods=["OPTIONS", "GET", "POST"])
+@app.route('/recommend', methods=["OPTIONS", "GET", "POST"])
 def getRecommendation():
     if request.method == "GET":
-        # Get the data from the request's JSON body
-
-        username = request.args.get('username') # worked
-        # print(RED, username, "Backend, recommend route", RESET)
-
-        # Handle the recommendation logic here
+        username = request.args.get('username')
         return anime.get_rec_animes(mysql, page=1, username=username)
-        # return "return from flask route /recommend"
+        
     else:
         return "GET request not supported"
 

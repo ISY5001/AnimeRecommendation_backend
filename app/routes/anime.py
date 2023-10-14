@@ -14,6 +14,7 @@ import warnings
 warnings.filterwarnings("ignore")
 import requests
 import re
+import pandas as pd
 import concurrent.futures
 from bs4 import BeautifulSoup  # You may need to install this package
 from AnimesRecommendation import collaborative_filtering_recommendation
@@ -92,10 +93,21 @@ def get_rec_animes(mysql, page=1, username=""):
     cursor.execute(sql_query, (username,))
     anime_title = cursor.fetchone()
     print(RED, anime_title, RESET)
-    return collaborative_filtering_recommendation.get_recommendation(anime_title)
+    result_df = collaborative_filtering_recommendation.get_recommendation(anime_title['Title'])
+    # print(BLUE, res, RESET)
+    if not isinstance(result_df, pd.DataFrame):
+        print(RED, anime_title['Title'], "get_recommendation returns", result_df, RESET)
+        return get_all_animes(mysql, page=1)
+    else:
+        result_df['poster'] = ''
+        print(GREEN, result_df.head(0) , RESET)
+        result_dict = result_df.to_dict(orient='records')
+        result_dict = fetch_image_urls(result_dict)
+        json_response = json.dumps({"Search": result_dict, "totalResults": str(len(result_dict)), "Response": "True"}, indent=2)
+
+        return json_response, 200
 
 
-    
 
 # API_URL = "https://www.omdbapi.com/"
 # # API_URL = "img.omdbapi.com/"
