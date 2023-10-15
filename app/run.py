@@ -87,7 +87,9 @@ def rate_anime():
     print('upload score')
     return rating.upload_user_ratings(mysql)
 
-
+@app.route('/nonzero_rating/<account_id>', methods=['GET'])
+def nonzero(account_id):
+    return rating.fetch_nonzero_ratings(mysql, account_id)
 
 #@app.route('/getAnime', methods=['GET'])
 #def fetch_anime_by_keyword():
