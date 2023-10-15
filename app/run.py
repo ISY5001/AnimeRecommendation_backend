@@ -68,6 +68,11 @@ def rate_anime():
     print('upload score')
     return rating.upload_user_ratings(mysql)
 
+
+@app.route('/nonzero_rating/<account_id>', methods=['GET'])
+def nonzero(account_id):
+    return rating.fetch_nonzero_ratings(mysql, account_id)
+  
 if __name__ == '__main__':
     # load()
     for rule in app.url_map.iter_rules():

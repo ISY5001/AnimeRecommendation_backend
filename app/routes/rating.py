@@ -40,3 +40,13 @@ def upload_user_ratings(mysql):
             return jsonify({"msg": "Rating updated successfully!"}), 200
         else:
             return jsonify({"msg": "Please provide all required data (account_id, anime_id, scores)!"}), 400
+
+
+def fetch_nonzero_ratings(mysql, account_id):
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT cad.* FROM cleaned_anime_data cad INNER JOIN ratings r ON cad.anime_id = r.anime_id WHERE r.scores > 0 AND r.account_id = %s;', (account_id,))
+    nonzero_ratings = cursor.fetchall()
+    if nonzero_ratings:
+        return jsonify(nonzero_ratings), 200
+    else:
+        return jsonify({"msg": "No ratings found for this user!"}), 404
