@@ -1,3 +1,6 @@
 /myenv
+/animeEnv
 *.csv
 *.pkl
+*.pyc
+*.deb
