@@ -35,7 +35,9 @@ def login(mysql):
                 session['loggedin'] = True
                 session['id'] = account['id']
                 session['username'] = account['username']
-                return jsonify({"msg": "success"}), 200
+                session['password'] = account['password']
+                return jsonify({"msg": "success", "account_id": session['id'], "username": session['username'],"password": session['password']}), 200
+
             else:
                 return jsonify({"msg" :"Incorrect username / password!"}), 400
         else:
@@ -90,7 +92,58 @@ def logout(mysql):
 	session.pop('username', None)
 	return redirect(url_for('login'))
 
+def get_userid_from_db(mysql):
+    # Retrieve the username and password from the query parameters
+    username = request.args.get('username')
+    password = request.args.get('password')
 
+    if username and password:
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute('SELECT * FROM accounts WHERE username = %s AND password = %s', (username, password,))
+        account = cursor.fetchone()
+
+        if account:
+            session['loggedin'] = True
+            session['id'] = account['id']
+            session['username'] = account['username']
+            session['password'] = account['password']
+            return jsonify({"msg": "success", "account_id": session['id'], "username": session['username'], "password": session['password']}), 200
+        else:
+            return jsonify({"msg": "Incorrect username / password!"}), 400
+
+    else:
+        return jsonify({"msg": "Please provide a username and password!"}), 400
+
+
+
+'''
+def get_userid_from_db(mysql):
+    if request.method == 'GET':
+        data = request.get_json()
+        if data and 'username' in data and 'password' in data:
+            username = data['username']
+            password = data['password']
+            cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+            cursor.execute('SELECT * FROM accounts WHERE username = %s AND password = %s', (username, password,))
+            account = cursor.fetchone()
+            if account:
+                session['loggedin'] = True
+                session['id'] = account['id']
+                session['username'] = account['username']
+                return jsonify({"account_id": session['id']}), 200
+
+            else:
+                return jsonify({"msg": "Incorrect username / password!"}), 400
+        else:
+            return jsonify({"msg": "Please provide a username and password!"}), 400
+    elif request.method == 'OPTIONS':
+        response = jsonify({"msg": "CORS preflight successful"})
+        response.status_code = 200
+        response.headers["Access-Control-Allow-Methods"] = "POST"
+        return response
+    else:
+        return jsonify({"msg": "Invalid request method!"}), 400
+'''
 # def register(mysql):
 # 	msg = ''
 # 	if request.method == 'POST' and 'username' in request.form and 'password' in request.form and 'email' in request.form :

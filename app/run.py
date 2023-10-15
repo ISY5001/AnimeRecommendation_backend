@@ -18,7 +18,7 @@ from routes import users
 from routes import rating
 from routes import anime
 from config import mysql
-from routes import chatbot
+#from routes import chatbot
 
 # app = Flask(__name__)
 # app = Flask(__name__, template_folder="static/templates")  # Update the template_folder path
@@ -35,10 +35,11 @@ mysql = mysql.configure_mysql(app)
 #     ]
 #     # c.open_jwt = True;
 #     conf.set_config(c)
-
+'''
 @app.route('/chatbot', methods=["OPTIONS","GET","POST"])
 def chatbotreply():
     return chatbot.reply()  
+    '''
 @app.route('/')
 @app.route("/register", methods=["OPTIONS","GET","POST"])
 def register():
@@ -67,6 +68,24 @@ def fetch_anime():
     page = int(request.args.get('page', 1))
     return anime.get_all_animes(mysql, page)
 
+@app.route('/get_userid', methods=['GET','POST'])
+def get_userid_endpoint():
+    response = users.get_userid_from_db(mysql)
+    print(response)
+    return response
+
+
+@app.route('/rating/fetch_ratings/<account_id>/<anime_id>', methods=['GET'])
+def get_user_ratings(account_id, anime_id):
+    print('ac'+account_id)
+    print('an'+anime_id)
+    return rating.fetch_user_ratings(mysql, account_id, anime_id)
+
+
+@app.route('/rating/upload_ratings', methods=['POST'])
+def rate_anime():
+    print('upload score')
+    return rating.upload_user_ratings(mysql)
 
 
 

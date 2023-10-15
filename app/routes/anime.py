@@ -11,19 +11,26 @@ def get_all_animes(mysql, page=1):
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
         logging.info(f"Fetching all anime on page: {page}")
         
-        # Adjust the query to fetch all anime
+        # Query to get the total number of animes
+        cursor.execute('SELECT COUNT(*) as total_count FROM cleaned_anime_data')
+        total_count = cursor.fetchone()['total_count']
+        
+        # Adjust the query to fetch all anime based on pagination
         cursor.execute('SELECT * FROM cleaned_anime_data LIMIT %s, 10', ((page-1)*10,))
         
         anime_list = cursor.fetchall()
-        logging.info(f"Number of anime found: {len(anime_list)}")
+        logging.info(f"Number of anime found on current page: {len(anime_list)}")
         
         if anime_list:
-            return jsonify({"animes": anime_list}), 200
+            return jsonify({"animes": anime_list, "totalResults": total_count}), 200
         else:
             return jsonify({"msg": "No anime found!"}), 404
     except Exception as e:
         logging.error(f"Error fetching anime: {str(e)}")
         return jsonify({"msg": "Internal server error"}), 500
+    
+
+
 
 '''
 def get_anime_by_keyword(mysql, keyword, page=1, limit=10):
