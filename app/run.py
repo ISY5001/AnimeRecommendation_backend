@@ -13,21 +13,12 @@ cors = CORS(app)
 app.config['CORS_HEADERS'] = 'content-type'
 app_config = mysql.load_config()
 mysql = mysql.configure_mysql(app, app_config['mysql'])
-# mysql = mysql.configure_mysql(app)
 
-# def load():
-#     c = conf.Config()
-#     c.routes = [
-#         "/ping", "/renewal", "/login", "signup",
-#         "/rating", "/rating/getAll", "/rating/rateAMoive"
-#     ]
-#     # c.open_jwt = True;
-#     conf.set_config(c)
 '''
 @app.route('/chatbot', methods=["OPTIONS","GET","POST"])
 def chatbotreply():
     return chatbot.reply()  
-    '''
+'''
 @app.route('/')
 @app.route("/register", methods=["OPTIONS","GET","POST"])
 def register():
@@ -36,8 +27,6 @@ def register():
 @app.route("/login", methods=["OPTIONS","GET","POST"])
 def login():
     return users.login(mysql)
-
- 
 
 @app.route("/logout")
 def logout():
