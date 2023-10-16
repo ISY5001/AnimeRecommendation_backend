@@ -44,7 +44,7 @@ def get_url_by_link(anime_url):
 
     except Exception as e:
         print("[E]", str(e))
-        return None
+        return "https://github.githubassets.com/images/modules/logos_page/GitHub-Logo.png"
 
 # Function to fetch image URLs for all anime items in parallel
 def fetch_image_urls(anime_list):
@@ -96,14 +96,17 @@ def get_rec_animes(mysql, page=1, username=""):
     result_df = collaborative_filtering_recommendation.get_recommendation(anime_title['Title'])
     # print(BLUE, res, RESET)
     if not isinstance(result_df, pd.DataFrame):
-        print(RED, anime_title['Title'], "get_recommendation returns", result_df, RESET)
+        print(CYAN, anime_title['Title'], "get_recommendation returns", result_df, RESET)
         return get_all_animes(mysql, page=1)
     else:
-        result_df['poster'] = ''
+        result_df['poster'] = 'https://github.githubassets.com/images/modules/logos_page/GitHub-Logo.png'
+        result_df['soup'] = 'soup'
+        result_df['Synopsis'] = 'Synopsis'
         print(GREEN, result_df.head(0) , RESET)
         result_dict = result_df.to_dict(orient='records')
-        result_dict = fetch_image_urls(result_dict)
+        # result_dict = fetch_image_urls(result_dict)
         json_response = json.dumps({"Search": result_dict, "totalResults": str(len(result_dict)), "Response": "True"}, indent=2)
+        print(YELLOW, json_response, RESET)
 
         return json_response, 200
 
