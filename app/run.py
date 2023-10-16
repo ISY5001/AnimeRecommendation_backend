@@ -28,10 +28,6 @@ def register():
 def login():
     return users.login(mysql)
 
-@app.route("/logout")
-def logout():
-    return users.logout(mysql)
-
 #Anime fetch from database
 @app.route('/anime', methods=['GET'])
 def fetch_anime():
@@ -44,21 +40,18 @@ def get_userid_endpoint():
     print(response)
     return response
 
-
 @app.route('/rating/fetch_ratings/<account_id>/<anime_id>', methods=['GET'])
 def get_user_ratings(account_id, anime_id):
     print('ac'+account_id)
     print('an'+anime_id)
     return rating.fetch_user_ratings(mysql, account_id, anime_id)
 
-
 @app.route('/rating/upload_ratings', methods=['POST'])
 def rate_anime():
     print('upload score')
     return rating.upload_user_ratings(mysql)
 
-
-@app.route('/nonzero_rating/<account_id>', methods=['GET'])
+@app.route('/rating/nonzero_rating/<account_id>', methods=['GET'])
 def nonzero(account_id):
     return rating.fetch_nonzero_ratings(mysql, account_id)
   
