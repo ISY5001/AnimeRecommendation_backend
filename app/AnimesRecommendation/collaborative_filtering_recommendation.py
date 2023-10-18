@@ -4,6 +4,8 @@ from scipy.sparse import csr_matrix
 from sklearn.neighbors import NearestNeighbors
 import pickle
 import os
+import warnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 def train_recommendation_system():
     # Load anime and rating data

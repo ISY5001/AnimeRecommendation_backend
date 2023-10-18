@@ -6,7 +6,7 @@ from AnimesRecommendation import collaborative_filtering_recommendation
 import re
 import json
 import pandas as pd
-
+from collections import namedtuple
 def get_all_animes(mysql, page=1):
     try:
         cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -14,12 +14,15 @@ def get_all_animes(mysql, page=1):
         
         # Query to get the total number of animes
         cursor.execute('SELECT COUNT(*) as total_count FROM cleaned_anime_data')
-        total_count = cursor.fetchone()['total_count']
+        total_count = cursor.fetchone()['total_count'] # class int
         
         # Adjust the query to fetch all anime based on pagination
         cursor.execute('SELECT * FROM cleaned_anime_data LIMIT %s, 10', ((page-1)*10,))
         
         anime_list = cursor.fetchall()
+        # print(anime_list)
+        print(type(anime_list))
+        
         logging.info(f"Number of anime found on current page: {len(anime_list)}")
         
         if anime_list:
@@ -50,9 +53,21 @@ def get_recommend_animes(mysql, username='username'):
         result_df['poster'] = 'https://github.githubassets.com/images/modules/logos_page/GitHub-Logo.png'
         result_df['soup'] = 'soup'
         result_df['Synopsis'] = 'Synopsis'
-        result_dict = result_df.to_dict(orient='records')
-        # result_dict = fetch_image_urls(result_dict)
-        json_response = json.dumps({"animes": result_dict, "totalResults": str(len(result_dict))}, indent=2)
+        print(result_df.columns)
+        anime_id_list = result_df['Anime_id'].tolist()
+        placeholders = ', '.join(['%s'] * len(anime_id_list))
+        query = f"SELECT * FROM cleaned_anime_data WHERE Anime_id IN ({placeholders})"
+        values = (tuple(anime_id_list),)
+        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+        cursor.execute(query, anime_id_list)
+        # result_dict = result_df.to_dict(orient='records')
+        total_count = len(result_df)
+        result = cursor.fetchall()
+        query2 = f"SELECT COUNT(*) as total_count FROM cleaned_anime_data WHERE Anime_id IN ({placeholders})"
+        cursor.execute(query2, anime_id_list)
+        total_count = cursor.fetchone()['total_count'] # class int
+        print(type (total_count))
+        json_response = jsonify({"animes": result, "totalResults": total_count})
 
         return json_response, 200
 
