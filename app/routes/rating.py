@@ -1,8 +1,10 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
-import re
-import json
+import logging
+import requests
+
+OMDB_API_KEY = 'f9bfc5b4'  
 
 def fetch_user_ratings(mysql, account_id, anime_id):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
@@ -41,12 +43,28 @@ def upload_user_ratings(mysql):
         else:
             return jsonify({"msg": "Please provide all required data (account_id, anime_id, scores)!"}), 400
 
-
 def fetch_nonzero_ratings(mysql, account_id):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute('SELECT cad.* FROM cleaned_anime_data cad INNER JOIN ratings r ON cad.anime_id = r.anime_id WHERE r.scores > 0 AND r.account_id = %s;', (account_id,))
     nonzero_ratings = cursor.fetchall()
+
     if nonzero_ratings:
+        for rating in nonzero_ratings:
+            poster = get_movie_info(rating['Title'])
+            rating['poster'] = poster
+
         return jsonify(nonzero_ratings), 200
     else:
         return jsonify({"msg": "No ratings found for this user!"}), 404
+
+def get_movie_info(movie_title):
+    url = f"http://www.omdbapi.com/?t={movie_title}&apikey={OMDB_API_KEY}"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        movie_data = response.json()
+        poster_url = movie_data.get('Poster', '')
+        return poster_url
+    else:
+        return {"error": "Movie information not available"}
+
