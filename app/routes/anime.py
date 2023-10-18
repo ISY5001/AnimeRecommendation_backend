@@ -2,9 +2,10 @@ from flask import Flask, render_template, request, redirect, url_for, session, j
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import logging
-
+from AnimesRecommendation import collaborative_filtering_recommendation
 import re
 import json
+import pandas as pd
 
 def get_all_animes(mysql, page=1):
     try:
@@ -29,7 +30,31 @@ def get_all_animes(mysql, page=1):
         logging.error(f"Error fetching anime: {str(e)}")
         return jsonify({"msg": "Internal server error"}), 500
     
+def get_recommend_animes(mysql, username='username'):
+    
+    sql_query = """
+        select Title from cleaned_anime_data where Anime_id = (
+        select anime_id from ratings where account_id = (
+        SELECT id FROM accounts WHERE username=%s) order by scores desc limit 1);
+        """
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute(sql_query, (username,))
+    anime_title = cursor.fetchone()
+    print(">>>>>>>>>> user fav movie is ", anime_title['Title'])
+    result_df = collaborative_filtering_recommendation.get_recommendation(anime_title['Title'])
+    # print(BLUE, res, RESET)
+    if not isinstance(result_df, pd.DataFrame) or len(result_df) == 0:
+        print(">>>>>>>>>>>> getting null recommendation")
+        return get_all_animes(mysql, page=1)
+    else:
+        result_df['poster'] = 'https://github.githubassets.com/images/modules/logos_page/GitHub-Logo.png'
+        result_df['soup'] = 'soup'
+        result_df['Synopsis'] = 'Synopsis'
+        result_dict = result_df.to_dict(orient='records')
+        # result_dict = fetch_image_urls(result_dict)
+        json_response = json.dumps({"animes": result_dict, "totalResults": str(len(result_dict))}, indent=2)
 
+        return json_response, 200
 
 
 '''
