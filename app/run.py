@@ -32,6 +32,14 @@ def login():
 def logout():
     return users.logout(mysql)
 
+
+# detail page of a anime
+@app.route('/detail', methods=['GET'])
+def get_detial():
+    animeid = int(request.args.get('animeid', 1))
+    return anime.get_anime_detail(mysql, animeid)
+
+
 #Anime fetch from database
 @app.route('/anime', methods=['GET'])
 def fetch_anime():

@@ -152,6 +152,14 @@ def get_recommend_animes(mysql, username='username'):
 
         return json_response, 200
 
+def get_anime_detail(mysql, anime_id):
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM cleaned_anime_data WHERE Anime_id = %s', (anime_id,))
+    result = cursor.fetchone()
+    if result:
+        return jsonify(result)
+    else:
+        return jsonify({"msg": "Anime not found!"}), 404
 
 '''
 def get_anime_by_keyword(mysql, keyword, page=1, limit=10):
