@@ -37,6 +37,8 @@ def get_url_by_link(anime_item):
             
             # Find the image URL using BeautifulSoup (assuming it's in the meta tags)
             img_url = soup.find('meta', property='og:image')['content']
+            
+            print("img_url", img_url)
             # print(img_url)
             anime_item['Poster'] = img_url
             print(anime_item['Poster'])
@@ -140,7 +142,7 @@ def get_recommend_animes(mysql, username='username'):
             cursor.execute(update_query, (poster_url, anime_id))
         mysql.connection.commit()
         print("executed success!")
-        
+
 
         query2 = f"SELECT COUNT(*) as total_count FROM cleaned_anime_data WHERE Anime_id IN ({placeholders})"
         cursor.execute(query2, anime_id_list)
