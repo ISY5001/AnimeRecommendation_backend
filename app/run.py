@@ -50,10 +50,16 @@ def fetch_anime():
 @app.route('/recommend', methods=['GET', 'POST']) 
 def recommend_anime():
     username = request.args.get('username')
-    if not username :
+    animeId = request.args.get('animeid', -1,type=int)
+    if username is None and animeId == -1:
         return anime.get_all_animes(mysql, page=1)
-    return anime.get_recommend_animes(mysql, username)
-
+    elif username is not None and animeId == -1:
+        return anime.get_recommend_animes(mysql, username)
+    elif username is None and animeId != -1:
+        return anime.get_recommend_animes_by_anime_id(mysql, animeId)
+        # return jsonify({"animeid": animeId}), 200
+    else:
+        return anime.get_all_animes(mysql, page=1)
 
 @app.route('/get_userid', methods=['GET','POST'])
 def get_userid_endpoint():
