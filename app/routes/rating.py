@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
-import logging
-import requests
 
 OMDB_API_KEY = 'f9bfc5b4'  
 
@@ -26,20 +24,25 @@ def upload_user_ratings(mysql):
             scores = data['scores']
 
             cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-            
-            # Check if the rating already exists for the anime by the user
-            cursor.execute('SELECT * FROM ratings WHERE account_id = %s AND anime_id = %s', (account_id, anime_id))
-            existing_rating = cursor.fetchone()
 
-            if existing_rating:
-                # Update existing rating
-                cursor.execute('UPDATE ratings SET scores = %s WHERE account_id = %s AND anime_id = %s', (scores, account_id, anime_id))
-            else:
-                # Insert new rating
-                cursor.execute('INSERT INTO ratings (account_id, scores, anime_id) VALUES (%s, %s, %s)', (account_id, scores, anime_id))
-            
-            mysql.connection.commit()
-            return jsonify({"msg": "Rating updated successfully!"}), 200
+            try:
+                cursor.execute('SELECT * FROM ratings WHERE account_id = %s AND anime_id = %s', (account_id, anime_id))
+                existing_rating = cursor.fetchone()
+
+                if existing_rating:
+                    # Update existing rating
+                    cursor.execute('UPDATE ratings SET scores = %s WHERE account_id = %s AND anime_id = %s', (scores, account_id, anime_id))
+                else:
+                    # Insert new rating
+                    cursor.execute('INSERT INTO ratings (account_id, scores, anime_id) VALUES (%s, %s, %s)', (account_id, scores, anime_id))
+
+                mysql.connection.commit()
+                return jsonify({"msg": "Rating updated successfully!"}), 200
+
+            except Exception as e:
+                mysql.connection.rollback()  # 回滚事务
+                return jsonify({"msg": "An error occurred while updating the rating!"}), 500
+
         else:
             return jsonify({"msg": "Please provide all required data (account_id, anime_id, scores)!"}), 400
 
@@ -49,22 +52,7 @@ def fetch_nonzero_ratings(mysql, account_id):
     nonzero_ratings = cursor.fetchall()
 
     if nonzero_ratings:
-        for rating in nonzero_ratings:
-            poster = get_movie_info(rating['Title'])
-            rating['poster'] = poster
-
         return jsonify(nonzero_ratings), 200
     else:
         return jsonify({"msg": "No ratings found for this user!"}), 404
-
-def get_movie_info(movie_title):
-    url = f"http://www.omdbapi.com/?t={movie_title}&apikey={OMDB_API_KEY}"
-    response = requests.get(url)
-
-    if response.status_code == 200:
-        movie_data = response.json()
-        poster_url = movie_data.get('Poster', '')
-        return poster_url
-    else:
-        return {"error": "Movie information not available"}
 

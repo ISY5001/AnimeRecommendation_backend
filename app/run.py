@@ -45,19 +45,14 @@ def recommend_anime():
 
 @app.route('/get_userid', methods=['GET','POST'])
 def get_userid_endpoint():
-    response = users.get_userid_from_db(mysql)
-    print(response)
-    return response
+    return users.get_userid_from_db(mysql)
 
 @app.route('/rating/fetch_ratings/<account_id>/<anime_id>', methods=['GET'])
 def get_user_ratings(account_id, anime_id):
-    print('ac'+account_id)
-    print('an'+anime_id)
     return rating.fetch_user_ratings(mysql, account_id, anime_id)
 
 @app.route('/rating/upload_ratings', methods=['POST'])
 def rate_anime():
-    print('upload score')
     return rating.upload_user_ratings(mysql)
 
 @app.route('/rating/nonzero_rating/<account_id>', methods=['GET'])
