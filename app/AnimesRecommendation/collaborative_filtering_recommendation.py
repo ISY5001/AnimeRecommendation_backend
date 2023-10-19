@@ -7,12 +7,12 @@ import os
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
-current_directory = os.getcwd()
+prefix_data = "app/AnimesRecommendation/data"
 
 def train_recommendation_system():
     # Load anime and rating data
-    rating = pd.read_csv(os.path.join(current_directory, 'data/rating.csv'), encoding='latin')
-    anime = pd.read_csv(os.path.join(current_directory, 'data/cleaned_anime_data.csv'), encoding='latin')
+    rating = pd.read_csv(os.path.join(prefix_data, 'rating.csv'), encoding='latin')
+    anime = pd.read_csv(os.path.join(prefix_data, 'cleaned_anime_data.csv'), encoding='latin')
 
     # Filter anime and users based on rating counts
     anime_rating = rating.groupby(by='anime_id').count()
@@ -35,20 +35,20 @@ def train_recommendation_system():
     recommender.fit(csr_rating_matrix)
 
     # Save rating matrix and recommender to files
-    with open(os.path.join(current_directory, 'data/rating_matrix.pkl'), 'wb') as rating_matrix_file:
+    with open(os.path.join(prefix_data, 'rating_matrix.pkl'), 'wb') as rating_matrix_file:
         pickle.dump(rating_matrix, rating_matrix_file)
-    with open(os.path.join(current_directory, 'data/recommender.pkl'), 'wb') as recommender_file:
+    with open(os.path.join(prefix_data, 'recommender.pkl'), 'wb') as recommender_file:
         pickle.dump(recommender, recommender_file)
 
 def get_recommendation(anime_title):
     print(">>>>>>>>>>>>>>Calling get_recommendation")
     try:
         # Load anime data
-        anime = pd.read_csv(os.path.join(current_directory, 'data/cleaned_anime_data.csv'), encoding='latin')
+        anime = pd.read_csv(os.path.join(prefix_data, 'cleaned_anime_data.csv'), encoding='latin')
         # Load rating matrix and recommender
-        with open(os.path.join(current_directory, 'data/rating_matrix.pkl'), 'rb') as rating_matrix_file:
+        with open(os.path.join(prefix_data, 'rating_matrix.pkl'), 'rb') as rating_matrix_file:
             rating_matrix = pickle.load(rating_matrix_file)
-        with open(os.path.join(current_directory, 'data/recommender.pkl'), 'rb') as recommender_file:
+        with open(os.path.join(prefix_data, 'recommender.pkl'), 'rb') as recommender_file:
             recommender = pickle.load(recommender_file)
         print(">>>>>>>>>>recommend loaded success!")
         # Find the index of the user's chosen anime
