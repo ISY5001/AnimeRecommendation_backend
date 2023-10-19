@@ -38,6 +38,15 @@ def fetch_anime():
     page = int(request.args.get('page', 1))
     return anime.get_all_animes(mysql, page)
 
+# Recommend Animes 
+@app.route('/recommend', methods=['GET', 'POST']) 
+def recommend_anime():
+    username = request.args.get('username')
+    if not username :
+        return anime.get_all_animes(mysql, page=1)
+    return anime.get_recommend_animes(mysql, username)
+
+
 @app.route('/get_userid', methods=['GET','POST'])
 def get_userid_endpoint():
     response = users.get_userid_from_db(mysql)
