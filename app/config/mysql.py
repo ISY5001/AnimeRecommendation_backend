@@ -4,7 +4,7 @@ from flask_mysqldb import MySQL
 
 def load_config():
     current_directory = os.getcwd()
-    config_file_path = os.path.join(current_directory, 'config', 'config.yaml')
+    config_file_path = os.path.join(current_directory, 'app/config', 'config.yaml')
     with open(config_file_path, "r") as config_file:
         config = yaml.safe_load(config_file)
     return config
