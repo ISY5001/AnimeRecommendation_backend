@@ -47,8 +47,6 @@ def get_url_by_link(anime_item):
         print("[E]", str(e))
         return
 
-
-
 # Function to fetch image URLs for all anime items in parallel
 def modify_poster_urls(anime_list):
     try:
@@ -57,8 +55,6 @@ def modify_poster_urls(anime_list):
     except Exception as e:
         print("[E]", str(e))
         return
-
-
 
 def get_all_animes(mysql, page=1):
     try:
@@ -87,8 +83,6 @@ def get_all_animes(mysql, page=1):
         mysql.connection.commit()
         print("executed success!")
 
-
-
         logging.info(f"Number of anime found on current page: {len(anime_list)}")
         
         if anime_list:
@@ -100,7 +94,7 @@ def get_all_animes(mysql, page=1):
         return jsonify({"msg": "Internal server error"}), 500
     
 def get_recommend_animes(mysql, username='username'):
-    
+    # get the highest score anime that user has scored
     sql_query = """
         select Title from cleaned_anime_data where Anime_id = (
         select anime_id from ratings where account_id = (
