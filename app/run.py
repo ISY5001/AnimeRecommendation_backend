@@ -6,7 +6,7 @@ from routes import users
 from routes import rating
 from routes import anime
 from config import mysql
-#from routes import chatbot
+from routes import chatbot
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -14,11 +14,11 @@ app.config['CORS_HEADERS'] = 'content-type'
 app_config = mysql.load_config()
 mysql = mysql.configure_mysql(app, app_config['mysql'])
 
-'''
+
 @app.route('/chatbot', methods=["OPTIONS","GET","POST"])
 def chatbotreply():
     return chatbot.reply()  
-'''
+
 @app.route('/')
 @app.route("/register", methods=["OPTIONS","GET","POST"])
 def register():

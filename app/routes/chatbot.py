@@ -1,12 +1,14 @@
-'''
+
 from flask import Flask, request, jsonify
 from pprint import pprint
 from paddlenlp import Taskflow
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from ..AnimesRecommendation import content_based_recommendation
-from ..AnimesRecommendation import collaborative_filtering_recommendation
+from AnimesRecommendation import collaborative_filtering_recommendation
+from AnimesRecommendation import content_based_recommendation
+#from ..AnimesRecommendation import content_based_recommendation
+#from ..AnimesRecommendation import collaborative_filtering_recommendation
 app = Flask(__name__)
 
 
@@ -28,14 +30,17 @@ def ner(sentence):
                       
     return texts
 
-def lookforanime(num):
-    
-    anime = pd.read_csv("app/data/cleaned_anime_data.csv", index_col=0)
-    count = CountVectorizer(stop_words='english')
-    count_matrix = count.fit_transform(anime['soup'])
-    cosine_sim2 = cosine_similarity(count_matrix, count_matrix)
-    recommendations = content_based_recommendation.get_recommendations(num, cosine_sim2, num_recommend=10)
-    return recommendations
+def lookforanime(animeName):
+
+    #list转化为string
+    animeName = ' '.join(animeName)
+    recommendations = collaborative_filtering_recommendation.get_recommendation(animeName)
+    recommendationList = recommendations['Title'].tolist();
+    #recommendationAnimes = []
+    #for recommendation in recommendations:
+        #recommendationAnimes.append(recommendation[1])
+
+    return recommendationList[0:5]
 
 def reply():
     print(request.data)
@@ -48,9 +53,11 @@ def reply():
         #print(user_message)
         # 调用 ner 函数获取命名实体识别结果
         return_message = ner(user_message)
+        recommended_animes = lookforanime(return_message)
         # 在这里处理用户消息，例如调用聊天机器人 API 获取回复
-        bot_reply = f"Based on the anime you mentioned: {return_message}, chatbot recommend you to watch:"
-
+        bot_reply = f"Based on the anime you mentioned: {return_message}, I recommend you to watch: {recommended_animes}"
+        
+        # bot_reply += ', '.join(recommended_animes)
         # 返回机器人的回复
         return jsonify({'botReply': bot_reply})
     elif request.method == 'OPTIONS':
@@ -65,4 +72,3 @@ def reply():
 
 if __name__ == '__main__':
     app.run(debug=True)
-'''
