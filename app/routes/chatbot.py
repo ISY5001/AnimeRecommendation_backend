@@ -30,6 +30,24 @@ def ner(sentence):
                       
     return texts
 
+def ner1(sentence):
+    schema = [{'Aspect': ['Opinion', 'Sentiment classification [negative, positive]']}]
+    sentence = sentence+'.'
+    ie_en = Taskflow('information_extraction', schema=schema, model='uie-base-en')
+    results = ie_en(sentence)
+    print(results)
+    texts = []
+    # 遍历列表中的每个字典项
+    for item in results:
+        # 遍历字典的键值对
+        for key, values in item.items():
+            # 遍历与键关联的列表中的每个字典项
+            for value in values:
+                # 提取 'text' 键的值并添加到 texts 列表中
+                texts.append(value['text'])
+                      
+    return texts
+
 def lookforanime(animeName):
 
     #list转化为string
