@@ -1,6 +1,6 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify,send_from_directory
 from flask_cors import CORS, cross_origin
-
+import os
 
 from routes import users
 from routes import rating
@@ -78,7 +78,13 @@ def nonzero(account_id):
 @app.route('/Anyani/upload_image', methods=['POST'])
 def upload_image():
     return animeGan.handle_animeGan()
-  
+
+@app.route('/content/outputs/<filename>', methods=['GET'])
+def get_output_image(filename):
+    OUTPUT_FOLDER = os.path.join(os.getcwd(), 'app/data/content/outputs/')
+    return send_from_directory(OUTPUT_FOLDER, filename)
+
+
 if __name__ == '__main__':
     # load()
     for rule in app.url_map.iter_rules():

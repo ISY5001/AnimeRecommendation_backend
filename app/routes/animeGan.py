@@ -103,25 +103,29 @@ def handle_animeGan():
         uploaded_file = request.files['image']
         process(uploaded_file)
         output_image = get_output_images()
+        filename = os.path.basename(output_image) if output_image else None
         if output_image:
             with open(output_image, 'rb') as img_file:
                 img_data = img_file.read()
             return {
                 'status': 'success',
                 'message': 'Image uploaded and processed successfully',
-                'image_data': img_data.decode('latin1')  
+                'image_data': img_data.decode('latin1'),
+                'filename': filename  
             }, 200
         else:
             return {
                 'status': 'success',
                 'message': 'Image uploaded and processed successfully',
-                'image_data': None
+                'image_data': None,
+                'filename': None
             }, 200
     except Exception as e:
         return {
             'status': 'error',
             'message': str(e)
         }, 400
+
 
 if __name__ == '__main__':
     process()
