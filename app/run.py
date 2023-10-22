@@ -5,6 +5,7 @@ from flask_cors import CORS, cross_origin
 from routes import users
 from routes import rating
 from routes import anime
+from routes import animeGan
 from config import mysql
 from routes import chatbot
 
@@ -27,7 +28,16 @@ def register():
 @app.route("/login", methods=["OPTIONS","GET","POST"])
 def login():
     return users.login(mysql)
-
+  
+@app.route("/logout")
+def logout():
+    return users.logout(mysql)
+  
+# detail page of a anime
+@app.route('/detail', methods=['GET'])
+def get_detial():
+    animeid = int(request.args.get('animeid', 1))
+    return anime.get_anime_detail(mysql, animeid)
 #Anime fetch from database
 @app.route('/anime', methods=['GET'])
 def fetch_anime():
@@ -38,10 +48,16 @@ def fetch_anime():
 @app.route('/recommend', methods=['GET', 'POST']) 
 def recommend_anime():
     username = request.args.get('username')
-    if not username :
+    animeId = request.args.get('animeid', -1,type=int)
+    if username is None and animeId == -1:
         return anime.get_all_animes(mysql, page=1)
-    return anime.get_recommend_animes(mysql, username)
-
+    elif username is not None and animeId == -1:
+        return anime.get_recommend_animes(mysql, username)
+    elif username is None and animeId != -1:
+        return anime.get_recommend_animes_by_anime_id(mysql, animeId)
+        # return jsonify({"animeid": animeId}), 200
+    else:
+        return anime.get_all_animes(mysql, page=1)
 
 @app.route('/get_userid', methods=['GET','POST'])
 def get_userid_endpoint():
@@ -58,6 +74,10 @@ def rate_anime():
 @app.route('/rating/nonzero_rating/<account_id>', methods=['GET'])
 def nonzero(account_id):
     return rating.fetch_nonzero_ratings(mysql, account_id)
+
+@app.route('/Anyani/upload_image', methods=['POST'])
+def upload_image():
+    return animeGan.handle_animeGan()
   
 if __name__ == '__main__':
     # load()

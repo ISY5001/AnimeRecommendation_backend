@@ -146,6 +146,52 @@ def get_recommend_animes(mysql, username='username'):
 
         return json_response, 200
 
+def get_recommend_animes_by_anime_id(mysql, anime_id):
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM cleaned_anime_data WHERE Anime_id = %s', (anime_id,))
+    anime_item = cursor.fetchone()
+    result_df = collaborative_filtering_recommendation.get_recommendation(anime_item['Title'])
+    result_df = result_df[result_df['Title'] != anime_item['Title']]
+    anime_id_list = result_df['Anime_id'].tolist()
+    placeholders = ', '.join(['%s'] * len(anime_id_list))
+    query = f"SELECT * FROM cleaned_anime_data WHERE Anime_id IN ({placeholders})"
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute(query, anime_id_list)
+    # result_dict = result_df.to_dict(orient='records')
+    total_count = len(result_df)
+    result = cursor.fetchall()
+    anime_list = result 
+    # fetch poster urls and write back to sql
+    modify_poster_urls(anime_list)
+    # write back to sql if modified success
+    update_query = "UPDATE cleaned_anime_data SET Poster = %s WHERE Anime_id = %s"
+    # Loop through the anime_list and execute the update query for each record
+    for anime in anime_list:
+        poster_url = anime['Poster']
+        anime_id = anime['Anime_id']  # Assuming 'id' is the unique identifier for each anime
+        cursor.execute(update_query, (poster_url, anime_id))
+    mysql.connection.commit()
+    print("executed success!")
+
+    query2 = f"SELECT COUNT(*) as total_count FROM cleaned_anime_data WHERE Anime_id IN ({placeholders})"
+    cursor.execute(query2, anime_id_list)
+    total_count = cursor.fetchone()['total_count'] # class int
+    print(type (total_count))
+    json_response = jsonify({"animes": result, "totalResults": total_count})
+
+    return json_response, 200
+
+    
+
+def get_anime_detail(mysql, anime_id):
+    cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
+    cursor.execute('SELECT * FROM cleaned_anime_data WHERE Anime_id = %s', (anime_id,))
+    result = cursor.fetchone()
+    if result:
+        return jsonify(result)
+    else:
+        return jsonify({"msg": "Anime not found!"}), 404
+
 
 '''
 def get_anime_by_keyword(mysql, keyword, page=1, limit=10):
