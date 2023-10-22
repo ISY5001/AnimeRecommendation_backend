@@ -31,13 +31,22 @@ def ner(sentence):
     return texts
 
 def ner1(sentence):
-    schema = [{'Aspect': ['Opinion', 'Sentiment classification [negative, positive]']}]
+    schema = ['Opinion']
     sentence = sentence+'.'
+    print(sentence)
     ie_en = Taskflow('information_extraction', schema=schema, model='uie-base-en')
+    ie_en.set_schema(schema)
     results = ie_en(sentence)
     print(results)
+    #pprint(ie_en("The teacher is very nice."))
+    schema = 'Sentiment classification [negative, positive]'
+    ie_en.set_schema(schema)
+    result = ie_en(sentence)
+    print(result)
     texts = []
+
     # 遍历列表中的每个字典项
+    ''''''
     for item in results:
         # 遍历字典的键值对
         for key, values in item.items():
@@ -46,7 +55,7 @@ def ner1(sentence):
                 # 提取 'text' 键的值并添加到 texts 列表中
                 texts.append(value['text'])
                       
-    return texts
+    return results
 
 def lookforanime(animeName):
 
@@ -70,11 +79,12 @@ def reply():
         user_message = data.get('userMessage')
         #print(user_message)
         # 调用 ner 函数获取命名实体识别结果
-        return_message = ner(user_message)
-        recommended_animes = lookforanime(return_message)
+        #return_message = ner(user_message)
+        return_message = ner1(user_message)
+        #recommended_animes = lookforanime(return_message)
         # 在这里处理用户消息，例如调用聊天机器人 API 获取回复
-        bot_reply = f"Based on the anime you mentioned: {return_message}, I recommend you to watch: {recommended_animes}"
-        
+        #bot_reply = f"Based on the anime you mentioned: {return_message}, I recommend you to watch: {recommended_animes}"
+        bot_reply = f"Based on our conversion, I recommend you to watch: {return_message}"
         # bot_reply += ', '.join(recommended_animes)
         # 返回机器人的回复
         return jsonify({'botReply': bot_reply})
