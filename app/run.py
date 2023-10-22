@@ -5,6 +5,7 @@ from flask_cors import CORS, cross_origin
 from routes import users
 from routes import rating
 from routes import anime
+from routes import animeGan
 from config import mysql
 #from routes import chatbot
 
@@ -73,6 +74,10 @@ def rate_anime():
 @app.route('/rating/nonzero_rating/<account_id>', methods=['GET'])
 def nonzero(account_id):
     return rating.fetch_nonzero_ratings(mysql, account_id)
+
+@app.route('/Anyani/upload_image', methods=['POST'])
+def upload_image():
+    return animeGan.handle_animeGan()
   
 if __name__ == '__main__':
     # load()
