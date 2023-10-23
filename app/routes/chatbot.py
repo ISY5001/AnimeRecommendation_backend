@@ -7,6 +7,7 @@ from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 from AnimesRecommendation import collaborative_filtering_recommendation
 from AnimesRecommendation import content_based_recommendation
+from AnimesRecommendation import soup_classfication
 #from ..AnimesRecommendation import content_based_recommendation
 #from ..AnimesRecommendation import collaborative_filtering_recommendation
 app = Flask(__name__)

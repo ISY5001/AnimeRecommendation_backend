@@ -27,6 +27,20 @@ def find_similar_movies(movie_title, df):
     top_5_movies = similar_movies.head(5)  # 获取前五个相似的电影
     return top_5_movies['Title'].tolist()  
 
+# 找出包含指定关键词的所有电影
+def find_movies_by_keyword(keyword, df):
+
+    movies_with_keyword = df[df['soup'].str.contains(keyword, case=False, na=False)]
+    if not movies_with_keyword.empty:
+        movie_cluster = movies_with_keyword.iloc[0]['cluster']
+        # 获取同一聚类中的所有电影
+        similar_movies = df[df['cluster'] == movie_cluster]
+        # 获取前五部相似电影的标题（确保它们包含指定的关键词）
+        top_5_movies = similar_movies[similar_movies['soup'].str.contains(keyword, case=False, na=False)].head(5)
+        return top_5_movies['Title'].tolist() 
+
+    return []  
+
 
 # 提取 "soup" 列，并使用 KMeans 聚类
 def kmeans_clustering(df):
@@ -51,19 +65,23 @@ def kmeans_clustering(df):
     principal_df = pd.DataFrame(data=principal_components, columns=['pc1', 'pc2'])
     final_df = pd.concat([principal_df, df[['cluster']]], axis=1)
 
-    # 绘制散点图
-    plt.figure(figsize=(10, 7))
-    sns.scatterplot(x='pc1', y='pc2', hue='cluster', data=final_df, palette='viridis')
-    plt.title('KMeans Clustering with 2D PCA')
-    plt.show()
+    # # 绘制散点图
+    # plt.figure(figsize=(10, 7))
+    # sns.scatterplot(x='pc1', y='pc2', hue='cluster', data=final_df, palette='viridis')
+    # plt.title('KMeans Clustering with 2D PCA')
+    # plt.show()
 
 
 if __name__ == "__main__":
     df = get_df_from_sql()
     kmeans_clustering(df)
 
+    # # 举个栗子, 用电影名称查找相似电影
+    # movie_title = 'Mezzo DSA'  
+    # similar_movies = find_similar_movies(movie_title, df)
+    # print(similar_movies)  
 
-    # 举个栗子
-    movie_title = 'Mezzo DSA'  # 替换为你想要查找的电影的标题
-    similar_movies = find_similar_movies(movie_title, df)
-    print(similar_movies)  # 打印相似电影的标题和 soup
+    # 举个栗子，使用关键词查找相似电影
+    keyword = 'comedy'
+    similar_movies = find_movies_by_keyword(keyword, df)
+    print(similar_movies)       
