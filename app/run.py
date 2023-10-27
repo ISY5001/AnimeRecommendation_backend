@@ -48,6 +48,7 @@ def fetch_anime():
 @app.route('/recommend', methods=['GET', 'POST']) 
 def recommend_anime():
     username = request.args.get('username')
+    print(username)
     animeId = request.args.get('animeid', -1,type=int)
     if username is None and animeId == -1:
         return anime.get_all_animes(mysql, page=1)
@@ -87,6 +88,6 @@ def get_output_image(filename):
 
 if __name__ == '__main__':
     # load()
-    for rule in app.url_map.iter_rules():
-        print(f'{rule} allows methods: {", ".join(rule.methods)}')
+    #for rule in app.url_map.iter_rules():
+        #print(f'{rule} allows methods: {", ".join(rule.methods)}')
     app.run(host='0.0.0.0', port=8282)

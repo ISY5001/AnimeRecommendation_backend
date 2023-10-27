@@ -28,8 +28,9 @@ def find_similar_movies(movie_title, df):
     return top_5_movies['Title'].tolist()  
 
 # 找出包含指定关键词的所有电影
-def find_movies_by_keyword(keyword, df):
-
+def find_movies_by_keyword(keyword):
+    df = get_df_from_sql()
+    kmeans_clustering(df)
     movies_with_keyword = df[df['soup'].str.contains(keyword, case=False, na=False)]
     if not movies_with_keyword.empty:
         movie_cluster = movies_with_keyword.iloc[0]['cluster']
@@ -51,13 +52,13 @@ def kmeans_clustering(df):
     df['cluster'] = kmeans.labels_
 
      # 打印每个聚类的顶部关键词
-    order_centroids = kmeans.cluster_centers_.argsort()[:, ::-1]
-    terms = vectorizer.get_feature_names_out()
-    for i in range(5):  
-        print(f"Cluster {i}:")
-        for ind in order_centroids[i, :5]:  
-            print(f" {terms[ind]}", end='')
-        print()
+     # order_centroids = kmeans.cluster_centers_.argsort()[:, ::-1]
+    # terms = vectorizer.get_feature_names_out()
+    # for i in range(5):  
+    #     print(f"Cluster {i}:")
+    #     for ind in order_centroids[i, :5]:  
+    #         print(f" {terms[ind]}", end='')
+    #     print()
 
     # 使用 PCA 降维以便可视化
     pca = PCA(n_components=2)
@@ -83,5 +84,5 @@ if __name__ == "__main__":
 
     # 举个栗子，使用关键词查找相似电影
     keyword = 'comedy'
-    similar_movies = find_movies_by_keyword(keyword, df)
+    similar_movies = find_movies_by_keyword(keyword)
     print(similar_movies)       

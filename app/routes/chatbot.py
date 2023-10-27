@@ -58,6 +58,12 @@ def ner1(sentence):
                       
     return results
 
+
+def get_recommendation(genre):
+    list = soup_classfication.find_movies_by_keyword(genre)
+    return ', \n'.join(list)
+
+
 def lookforanime(animeName):
 
     #list转化为string
@@ -81,11 +87,13 @@ def reply():
         #print(user_message)
         # 调用 ner 函数获取命名实体识别结果
         #return_message = ner(user_message)
-        return_message = ner1(user_message)
+        #return_message = ner1(user_message)
+        return_message = get_recommendation('comedy')
         #recommended_animes = lookforanime(return_message)
         # 在这里处理用户消息，例如调用聊天机器人 API 获取回复
         #bot_reply = f"Based on the anime you mentioned: {return_message}, I recommend you to watch: {recommended_animes}"
-        bot_reply = f"Based on our conversion, I recommend you to watch: {return_message}"
+        bot_reply = f"Based on the keyword -> comedy, I recommend you to watch: \n{return_message}"
+        
         # bot_reply += ', '.join(recommended_animes)
         # 返回机器人的回复
         return jsonify({'botReply': bot_reply})

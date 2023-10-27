@@ -103,7 +103,11 @@ def get_recommend_animes(mysql, username='username'):
     cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
     cursor.execute(sql_query, (username,))
     anime_title = cursor.fetchone()
-    print(">>>>>>>>>> user fav movie is ", anime_title['Title'])
+    if anime_title is None:
+        print("anime_title is None!")
+    else:
+        print(">>>>>>>>>> user fav movie is ", anime_title['Title'])
+    # print(">>>>>>>>>> user fav movie is ", anime_title['Title'])
     result_df = collaborative_filtering_recommendation.get_recommendation(anime_title['Title'])
     # print(BLUE, res, RESET)
     if not isinstance(result_df, pd.DataFrame) or len(result_df) == 0:
