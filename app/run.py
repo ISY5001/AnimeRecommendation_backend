@@ -32,6 +32,16 @@ def login():
 @app.route("/logout")
 def logout():
     return users.logout(mysql)
+
+@app.route('/get_avatar/<account_id>', methods=['GET'])
+def get_avatar(account_id):
+    print('getting avatar')
+    return users.get_avatar(mysql,account_id)
+
+@app.route('/upload_avatar', methods=['POST'])
+def upload_avatar():
+    print('uploading')
+    return users.upload_avatar(mysql)
   
 # detail page of a anime
 @app.route('/detail', methods=['GET'])
@@ -78,6 +88,8 @@ def nonzero(account_id):
 @app.route('/Anyani/upload_image', methods=['POST'])
 def upload_image():
     return animeGan.handle_animeGan()
+
+
   
 if __name__ == '__main__':
     # load()
