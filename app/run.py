@@ -32,6 +32,16 @@ def login():
 @app.route("/logout")
 def logout():
     return users.logout(mysql)
+
+@app.route('/get_avatar/<account_id>', methods=['GET'])
+def get_avatar(account_id):
+    print('getting avatar')
+    return users.get_avatar(mysql,account_id)
+
+@app.route('/upload_avatar', methods=['POST'])
+def upload_avatar():
+    print('uploading')
+    return users.upload_avatar(mysql)
   
 # detail page of a anime
 @app.route('/detail', methods=['GET'])
@@ -84,7 +94,6 @@ def upload_image():
 def get_output_image(filename):
     OUTPUT_FOLDER = os.path.join(os.getcwd(), 'app/data/content/outputs/')
     return send_from_directory(OUTPUT_FOLDER, filename)
-
 
 if __name__ == '__main__':
     # load()

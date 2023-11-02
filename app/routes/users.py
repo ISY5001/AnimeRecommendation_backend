@@ -1,8 +1,12 @@
+from flask import Response, request
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from flask_mysqldb import MySQL
 import MySQLdb.cursors
 import re
 import json
+from flask import jsonify
+import logging
+import base64
 
 # import sys
 # sys.path.append("/home/hewen/ISS-workshop/MVP/AnimeRecommendation_backend/app")
@@ -175,3 +179,55 @@ def get_userid_from_db(mysql):
 # access_token, refresh_token = login("1234567890", "hashed_password")
 # result = logout()
 # result = signup("new_user", "new_password")
+
+def get_avatar(mysql,account_id):
+    # Assuming `account_id` is passed as an argument to this function
+    # If not, adjust the query accordingly
+
+    cursor = mysql.connection.cursor()
+    
+    query = "SELECT avatar_blob FROM accounts WHERE id=%s"  # Assuming your table name is 'users'
+    cursor.execute(query, [account_id])
+    
+    avatar_blob = cursor.fetchone()[0]
+    cursor.close()
+
+    print(avatar_blob)
+    
+    if avatar_blob:
+        return Response(avatar_blob, mimetype='image/jpg')  # Assuming it's a JPEG, adjust if needed
+    else:
+        return jsonify({"error": "Avatar not found"}), 404
+
+
+
+
+
+
+#from flask import jsonify, request
+import logging
+import base64
+
+def upload_avatar(mysql):
+    logging.info("Upload avatar endpoint hit!")
+    
+    if 'avatar' not in request.form:
+        return jsonify({'message': 'No avatar data in the request'}), 400
+
+    # Decode the Base64 string to binary
+    base64_data = request.form['avatar']
+    blob_data = base64.b64decode(base64_data)
+
+    # Fetch user_id
+    user_id = request.form['user_id']
+
+    try:
+        cursor = mysql.connection.cursor()
+        cursor.execute('UPDATE accounts SET avatar_blob = %s WHERE id = %s', (base64_data, user_id))
+        mysql.connection.commit()
+        cursor.close()
+        return jsonify({'message': 'Image saved successfully'}), 200
+
+    except Exception as e:
+        logging.error("Error occurred: " + str(e))
+        return jsonify({'message': 'Failed to save image', 'error': str(e)}), 500
