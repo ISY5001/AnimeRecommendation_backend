@@ -210,13 +210,14 @@ import base64
 
 def upload_avatar(mysql):
     logging.info("Upload avatar endpoint hit!")
+    print(request.form)
     
     if 'avatar' not in request.form:
         return jsonify({'message': 'No avatar data in the request'}), 400
 
     # Decode the Base64 string to binary
     base64_data = request.form['avatar']
-    blob_data = base64.b64decode(base64_data)
+    # blob_data = base64.b64decode(base64_data)
 
     # Fetch user_id
     user_id = request.form['user_id']
