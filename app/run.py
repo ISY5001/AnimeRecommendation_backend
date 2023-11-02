@@ -1,13 +1,13 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify,send_from_directory
 from flask_cors import CORS, cross_origin
-
+import os
 
 from routes import users
 from routes import rating
 from routes import anime
 from routes import animeGan
 from config import mysql
-#from routes import chatbot
+from routes import chatbot
 
 app = Flask(__name__)
 cors = CORS(app)
@@ -15,11 +15,11 @@ app.config['CORS_HEADERS'] = 'content-type'
 app_config = mysql.load_config()
 mysql = mysql.configure_mysql(app, app_config['mysql'])
 
-'''
+
 @app.route('/chatbot', methods=["OPTIONS","GET","POST"])
 def chatbotreply():
     return chatbot.reply()  
-'''
+
 @app.route('/')
 @app.route("/register", methods=["OPTIONS","GET","POST"])
 def register():
@@ -48,6 +48,7 @@ def fetch_anime():
 @app.route('/recommend', methods=['GET', 'POST']) 
 def recommend_anime():
     username = request.args.get('username')
+    print(username)
     animeId = request.args.get('animeid', -1,type=int)
     if username is None and animeId == -1:
         return anime.get_all_animes(mysql, page=1)
@@ -78,9 +79,15 @@ def nonzero(account_id):
 @app.route('/Anyani/upload_image', methods=['POST'])
 def upload_image():
     return animeGan.handle_animeGan()
-  
+
+@app.route('/content/outputs/<filename>', methods=['GET'])
+def get_output_image(filename):
+    OUTPUT_FOLDER = os.path.join(os.getcwd(), 'app/data/content/outputs/')
+    return send_from_directory(OUTPUT_FOLDER, filename)
+
+
 if __name__ == '__main__':
     # load()
-    for rule in app.url_map.iter_rules():
-        print(f'{rule} allows methods: {", ".join(rule.methods)}')
+    #for rule in app.url_map.iter_rules():
+        #print(f'{rule} allows methods: {", ".join(rule.methods)}')
     app.run(host='0.0.0.0', port=8282)
