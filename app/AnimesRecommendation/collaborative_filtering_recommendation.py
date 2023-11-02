@@ -51,6 +51,7 @@ def get_recommendation(anime_title):
         with open(os.path.join(prefix_data, 'recommender.pkl'), 'rb') as recommender_file:
             recommender = pickle.load(recommender_file)
         print(">>>>>>>>>>recommend loaded success!")
+        
         # Find the index of the user's chosen anime
         user_anime = anime[anime['Title'] == anime_title]
         user_anime_index = np.where(rating_matrix.index == int(user_anime['Anime_id']))[0][0]
