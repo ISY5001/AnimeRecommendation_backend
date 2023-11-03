@@ -17,7 +17,7 @@ out_dir = os.path.join(data_path, 'content/outputs')
 
 pic_form = ['.jpeg','.jpg','.png','.JPEG','.JPG','.PNG']
 
-providers = ['CPUExecutionProvider']
+providers = ['CoreMLExecutionProvider']
 # device_name = ort.get_device()
 
 # if device_name == 'cpu':
@@ -25,9 +25,14 @@ providers = ['CPUExecutionProvider']
 # elif device_name == 'GPU':
 #     providers = ['CUDAExecutionProvider', 'CPUExecutionProvider']
 # @param ['AnimeGAN_Hayao','AnimeGANv2_Hayao','AnimeGANv2_Shinkai','AnimeGANv2_Paprika']
-model = 'AnimeGANv2_Paprika' 
+
+# model =  request.form['style']
+model = 'AnimeGANv2_Paprika'
 # load model
 model_path = os.path.join(models_path, f'{model}.onnx') 
+# /Users/chenzhiwei/Downloads/AnimeRecommendation_backend/app/data/models/AnimeGANv2_Paprika.onnx
+# /Users/chenzhiwei/Downloads/AnimeRecommendation_backend/app/data/models/AnimeGANv2_Paprika.onnx
+print("\033[1;35m model_path: ", model_path, "\033[0m")
 session = ort.InferenceSession(model_path, providers=providers)
 
 def process_image(img, x32=True):
@@ -100,6 +105,12 @@ def get_output_images():
 
 def handle_animeGan():
     try:
+        global model, model_path, providers, session
+        model =  request.form['style']
+        print("\033[1;35mmodel changed to ", model, "\033[0m")
+        model_path = os.path.join(models_path, f'{model}.onnx') 
+        providers = ['CoreMLExecutionProvider']
+        session = ort.InferenceSession(model_path, providers=providers)
         uploaded_file = request.files['image']
         process(uploaded_file)
         output_image = get_output_images()

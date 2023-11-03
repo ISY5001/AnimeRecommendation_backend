@@ -88,6 +88,7 @@ def nonzero(account_id):
 
 @app.route('/Anyani/upload_image', methods=['POST'])
 def upload_image():
+    print("\033[1;35m Received :", request.form['style'],request.files['image'],"\033[0m")
     return animeGan.handle_animeGan()
 
 @app.route('/content/outputs/<filename>', methods=['GET'])
