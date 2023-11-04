@@ -6,6 +6,7 @@ from routes import users
 from routes import rating
 from routes import anime
 from routes import animeGan
+from routes import aniverse
 from config import mysql
 from routes import chatbot
 
@@ -90,6 +91,10 @@ def nonzero(account_id):
 def upload_image():
     print("\033[1;35m Received :", request.form['style'],request.files['image'],"\033[0m")
     return animeGan.handle_animeGan()
+
+@app.route('/Anyani/upload_image_aniverse', methods=['POST'])
+def upload_image_aniverse():
+    return aniverse.handle_animeGan()
 
 @app.route('/content/outputs/<filename>', methods=['GET'])
 def get_output_image(filename):
