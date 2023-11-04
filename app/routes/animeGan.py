@@ -66,7 +66,28 @@ def oil_painting_effect(path, k=6, d=3, sigma_color=50, sigma_space=50):
     return cv2.cvtColor(result, cv2.COLOR_RGB2BGR)
     
     
-
+def apply_sketch_style(imgpath):
+    model = request.form['style']
+    model_path = os.path.join(models_path, f'{model}.onnx')
+    print("\033[1;36m in apply sketch, model path is", model_path, "\033[0m")
+    print("\033[1;36m in apply sketch, image path is", imgpath, "\033[0m")
+    providers = 'CPUExecutionProvider'
+    # session = ort.InferenceSession(model_path, providers=ort.get_available_providers())
+    session = ort.InferenceSession(model_path, providers=providers)
+    img = cv2.imread(imgpath).astype(np.float32)
+    # img = cv2.resize(img, (128,128)).astype(np.float32)
+    # resize image to multiple of 32s
+    h, w = img.shape[:2]
+    def to_32s(x):
+        return 256 if x < 256 else x - x%32
+    img = cv2.resize(img, (to_32s(w), to_32s(h)))
+    img = np.expand_dims(img, axis=0)
+    x = session.get_inputs()[0].name
+    fake_img = session.run(None, {x : img})[0]
+    fke_img = (np.squeeze(fake_img) + 1.) / 2 * 255
+    fke_img = np.clip(fke_img, 0, 255).astype(np.uint8)
+    fke_img = cv2.resize(fke_img, (w, h))
+    return cv2.cvtColor(fke_img, cv2.COLOR_RGB2BGR)
 
 def process_image(img, x32=True):
     h, w = img.shape[:2]
@@ -133,6 +154,9 @@ def process(upload=True, clear_dir=True):
         if request.form['style'] == 'oilpainting':
             print("\033[1;35m getting oilpainting style\033[0m")
             res = oil_painting_effect(ims)
+        elif request.form['style'] == 'PortraitSketch':
+            print("\033[1;36m getting PortraitSketch style\033[0m")
+            res = apply_sketch_style(ims)
         else:
             mat, scale = load_test_data(ims)
             res = Convert(mat, scale)
